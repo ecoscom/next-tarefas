@@ -11,7 +11,16 @@ export default function Home() {
             priority className="max-w-md object-contain w-auto h-auto" alt="Logo Tasks+" src={heroImg} 
             />
         </div>
-        <h1 className="text-white text-center m-7 leading-[150%]">Manage your tasks. <br/> Teste</h1>
+        <h1 className="text-white text-center m-7 leading-[150%]">Manage your tasks.</h1>
+
+        <div className="flex items-center justify-around text-gray-800">
+          <section className="bg-[#fafafa] p-3 rounded hover:scale-105">
+            <span>+12 posts</span>
+          </section>
+          <section className="bg-[#fafafa] p-3 rounded hover:scale-105">
+            <span>+20 coments</span>
+          </section>
+        </div>
       </main>
     </div>
   );
