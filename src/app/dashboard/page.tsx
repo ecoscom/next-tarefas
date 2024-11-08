@@ -12,18 +12,12 @@ import { FaTrash } from "react-icons/fa";
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { Task } from "@/types/task";
 
 //export const metadata: Metadata = {
 //    title: 'Tasks+ - Dashboard'
 //}
 
-interface TaskProps{
-    id: string;
-    created: Date;
-    public: boolean;
-    tarefa: string;
-    user: string;
-}
 
 export default function Dashboard(){
 
@@ -36,7 +30,7 @@ export default function Dashboard(){
     
     const [input, setInput] = useState("")
     const [publicTask, setPublicTask] = useState(false)
-    const [tasks, setTasks] = useState<TaskProps[]>([])
+    const [tasks, setTasks] = useState<Task[]>([])
 
     useEffect(() => {
         async function loadTarefas(){
@@ -49,7 +43,7 @@ export default function Dashboard(){
         
 
             onSnapshot(q, (snapshot) => {
-                let lista = [] as TaskProps[];
+                let lista = [] as Task[];
 
                 snapshot.forEach((doc) => {
                     lista.push({
