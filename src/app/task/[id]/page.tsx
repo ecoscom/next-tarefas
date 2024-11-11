@@ -3,7 +3,7 @@
 'use client'
 
 //import { Metadata } from 'next';
-import { doc, collection, query, where, getDoc, addDoc, getDocs } from 'firebase/firestore';
+import { doc, collection, query, where, getDoc, addDoc, getDocs, deleteDoc } from 'firebase/firestore';
 
 import { db } from '@/services/firebaseConection';
 import { notFound, useSearchParams } from 'next/navigation';
@@ -13,6 +13,7 @@ import { Task } from '@/types/task';
 import { Textarea } from '@/components/textarea';
 import { useSession } from 'next-auth/react';
 import { useParams } from 'next/navigation';
+import { FaTrash } from 'react-icons/fa';
 
 interface CommentProps{
     id: string;
@@ -97,10 +98,34 @@ export default function TaskPage() {
                 name: session?.user?.name,
                 taskId: id
             })
+            const data = {
+                id: docRef.id,
+                comment: input,
+                user: session?.user?.email,
+                name: session?.user?.name,
+                taskId: id as string,
+                created: new Date(),
+            };
+
+            setComments((oldItems) => [...oldItems, data]);
+            setInput("")
+
         } catch (error) {
             console.log(error)
         }
-        setInput("")
+        
+    }
+
+    async function handleDeleteComment(id: string){
+        try {
+            const docRef = doc(db, "comments", id)
+            await deleteDoc(docRef)
+
+            const deleteComment = comments.filter((comment)=> comment.id !== id)
+            setComments(deleteComment)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return(
@@ -136,8 +161,18 @@ export default function TaskPage() {
                     <span>No comments</span>
                 )}
                 {comments.map((comment) => (
-                    <article key={comment.id}>
-                        <p>{comment.comment}</p>
+                    <article key={comment.id} className='border-solid border-2 border-gray-50 p-3 rounded mt-3'>
+                        <div className='flex items-center'>
+                            <label className='bg-gray-500 p-2 mr-2 rounded'>{comment.name}</label>
+                            {comment.user === session?.user?.email && (
+                                <button 
+                                    onClick={() => handleDeleteComment(comment.id)}
+                                    className='border-0 bg-transparent cursor-pointer'>
+                                    <FaTrash size={18} color='red' />
+                                </button>
+                            )}
+                        </div>
+                        <p className='mt-3 whitespace-pre-wrap'>{comment.comment}</p>
                     </article>
                 ))}
 

@@ -1,8 +1,18 @@
 import Image from "next/image";
 
 import heroImg from '../../public/assets/hero.png'
+import { db } from '@/services/firebaseConection';
 
-export default function Home() {
+import { collection, getDocs} from 'firebase/firestore'
+
+export default async function Home() {
+
+  const commentRef = collection(db, "comments")
+  const commentSnapshot = await getDocs(commentRef)
+
+  const postRef = collection(db, "tarefas")
+  const postSnapshot = await getDocs(postRef);
+
   return (
     <div className="bg-gray-800 w-full h-screen flex flex-col justify-center items-center">
       <main>
@@ -15,10 +25,10 @@ export default function Home() {
 
         <div className="flex items-center justify-around text-gray-800">
           <section className="bg-[#fafafa] p-3 rounded hover:scale-105">
-            <span>+12 posts</span>
+            <span>+{postSnapshot.size || 0} posts</span>
           </section>
           <section className="bg-[#fafafa] p-3 rounded hover:scale-105">
-            <span>+20 coments</span>
+            <span>+{commentSnapshot.size || 0} comments</span>
           </section>
         </div>
       </main>
